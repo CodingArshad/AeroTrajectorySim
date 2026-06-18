@@ -1,30 +1,45 @@
 # AeroTrajectorySim
 
-A Python project that simulates projectile motion under gravity and visualizes trajectories using Matplotlib.
+A Python project that simulates projectile motion using numerical integration. The simulator compares multiple launch angles, visualizes their trajectories, and extracts key flight statistics from each simulation.
 
-## Current Version (V2)
-- Gravity-only projectile simulation
-- Multi-angle trajectory comparison
-- Reusable simulation function for trajectory generation
-- Euler method numerical integration (time-stepped physics)
+## Current Version (V3)
 
-## Inputs
-- Launch velocity (m/s)
-- List of launch angles (degrees, converted internally to radians)
+### Features
+- Gravity-only projectile motion simulation
+- Multiple launch angle comparison
+- Trajectory visualization with Matplotlib
+- Flight statistics for each trajectory:
+  - Flight time
+  - Maximum height
+  - Horizontal range
+- Modular simulation function with separate analysis and visualization stages
 
-## Outputs
-- 2D trajectory plot (x vs y)
-- Multiple trajectories displayed on a single graph with labels
+## Technologies
+- Python
+- Matplotlib
+- Math
 
-## Core Features
-- Function-based simulation design
-- Separation of simulation and visualization
-- Loop-based experiment execution
-- Basic physics model (constant gravity)
+## Project Structure
+- **Simulation** – Generates projectile trajectories using Euler integration.
+- **Analysis** – Extracts flight statistics from the simulated trajectory data.
+- **Visualization** – Plots trajectories and displays a comparison of simulation results.
 
 ## Future Versions
-- Flight statistics (time of flight, max height, range)
-- Data export (CSV / structured datasets)
-- Drag and air resistance model
-- NumPy-based vectorized simulation upgrade
-- Interactive parameter input system
+### V4
+- User-configurable launch velocity
+- User-configurable launch angles
+- Improved terminal output formatting
+
+### V5
+- Automatic optimal launch angle search
+- Larger parameter sweeps
+- Improved experiment workflow
+
+### V6
+- Basic aerodynamic drag model
+- Comparison between drag and no-drag trajectories
+
+## Long-Term Goals
+- Export simulation data for analysis
+- Build machine learning datasets from simulation results
+- Expand toward more advanced aerospace and autonomy simulations
