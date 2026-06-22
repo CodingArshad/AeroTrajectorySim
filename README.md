@@ -2,23 +2,29 @@
 
 A Python project that simulates projectile motion using numerical integration. The simulator compares multiple launch angles, visualizes their trajectories, and extracts key flight statistics from each simulation.
 
-## Current Version (V4)
+## Current Version (V5)
 
 ### Features
 - Gravity-only projectile motion simulation using Euler integration
-- Multiple launch angle comparison
-- Trajectory visualization with Matplotlib
+- User-configurable launch velocity and angle sweep step size, entered at runtime
+- Automatic angle sweep across the full 0–90° range, generated from the step size
+- Trajectory visualization with Matplotlib for a representative subset of angles (0°, optimal, 90°, and the midpoints between them)
 - Flight statistics for each trajectory:
   - Flight time
   - Maximum height
   - Horizontal range
+- Single comparison table covering every simulated angle
+- Automatic optimal launch angle search (maximum horizontal range)
 - Structured evaluation pipeline with clearly separated stages:
+  - `get_user_input` – prompts for launch velocity and sweep step size
+  - `generate_angle_sweep` – builds the 0–90° angle list from the step size
   - `simulate_trajectory` – generates raw motion data
   - `analyze_trajectory` – extracts flight statistics from raw data
   - `get_flight_stats` – combines simulation and analysis into a single `FlightStats` record
-  - `run_simulation` – runs the pipeline across multiple launch angles
-  - `report` – prints flight statistics per angle
-  - `plot_function` – plots trajectories for all simulated angles
+  - `run_simulation` – runs the pipeline across all swept angles
+  - `print_comparison_table` – prints a single aligned table of all results
+  - `find_optimal_angle` – finds the angle with the greatest horizontal range
+  - `plot_function` – plots trajectories for a given list of angles
 
 ## Technologies
 - Python
@@ -32,12 +38,6 @@ A Python project that simulates projectile motion using numerical integration. T
 See `docs/algorithm.md` for the full pipeline design.
 
 ## Future Versions
-### V5
-- User-configurable launch velocity and launch angles (currently hardcoded)
-- Improved terminal output formatting (single comparison table instead of per-angle blocks)
-- Automatic optimal launch angle search
-- Larger parameter sweeps
-
 ### V6
 - Basic aerodynamic drag model
 - Comparison between drag and no-drag trajectories
