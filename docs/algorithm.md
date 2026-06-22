@@ -1,103 +1,132 @@
-# AeroTrajectorySim V3 Algorithm
+# AeroTrajectorySim V4 Algorithm
 
 ## Goal
-Simulate projectile motion under gravity for multiple launch angles and extract key flight statistics from each trajectory.
+Simulate projectile motion for multiple launch configurations and return structured flight results using a clean evaluation pipeline.
 
 ---
 
 ## Inputs
-- Launch velocity (m/s)
-- List of launch angles (degrees → converted to radians)
+- Launch velocity (m/s) — user-defined
+- Launch angles (degrees → radians)
 - Gravity (g)
 - Time step (dt)
 
 ---
 
 ## Outputs
-For each launch angle:
-- x positions (list)
-- y positions (list)
-- time values (list)
+A list of FlightStats objects, each containing:
+- launch_angle
+- flight_time
+- max_height
+- horizontal_range
 
-And across all angles:
-- angles
-- flight_times
-- max_heights
-- ranges
-
----
-
-## Algorithm
-
-### 1. Setup
-- Define launch velocity
-- Define list of launch angles
-- Convert angles to radians
-- Set gravity (g)
-- Set time step (dt)
-- Initialize empty result lists:
-  - angles
-  - flight_times
-  - max_heights
-  - ranges
+Plus:
+- trajectory plots for selected angles
+- printed comparison table
 
 ---
 
-### 2. Simulation Function (single angle)
+## Data Structure
 
-For a given angle:
+### FlightStats
+A structured record containing:
+- launch_angle
+- flight_time
+- max_height
+- horizontal_range
 
-1. Initialize position and time:
-   - x_pos = 0
-   - y_pos = 0
-   - time = 0
-
-2. Compute velocity components:
-   - x_vel = v * cos(angle)
-   - y_vel = v * sin(angle)
-
-3. Initialize storage lists:
-   - x
-   - y
-   - times
-
-4. While y_pos > 0:
-   - Append current x_pos, y_pos, time
-   - Update x_pos using x_vel
-   - Update y_pos using y_vel
-   - Update y_vel using gravity
-   - Increment time
-
-5. Return x, y, times
+One instance per simulation.
 
 ---
 
-### 3. Experiment Loop
+## Core Functions
 
-For each angle:
+### 1. simulate_trajectory(v, angle)
+**Input:**
+- velocity
+- angle (radians)
 
-1. Run simulation function
-2. Receive x, y, times
+**Output:**
+- x[], y[], time[]
 
-3. Compute:
-   - flight_time = last element of times
-   - max_height = max(y)
-   - range = last element of x
-
-4. Store results:
-   - angles.append(angle)
-   - flight_times.append(flight_time)
-   - max_heights.append(max_height)
-   - ranges.append(range)
+**Purpose:**
+Numerically simulate motion using Euler integration until y <= 0.
 
 ---
 
-### 4. Visualization
+### 2. analyze_trajectory(x, y, t)
+**Input:**
+- trajectory lists
 
-After all runs:
+**Output:**
+- flight_time = last time value
+- max_height = max(y)
+- horizontal_range = last x value
 
-- Plot all x vs y trajectories
-- Label each trajectory by angle
-- Add title, labels, legend
-- Display plot
-- print angles, flight_times, max_heights, and ranges in a nice format
+---
+
+### 3. organize_flight_stats(v, angle)
+**Input:**
+- velocity
+- angle
+
+**Process:**
+1. Call simulate_trajectory
+2. Call analyze_trajectory
+3. Return FlightStats object
+
+**Output:**
+- FlightStats
+
+---
+
+### 4. run_simulation(angles, velocity)
+**Input:**
+- list of angles
+- velocity
+
+**Process:**
+- loop through angles
+- call evaluate_configuration
+- store results in list
+
+**Output:**
+- list[FlightStats]
+
+---
+
+### 5. report(results)
+**Input:**
+- list[FlightStats]
+
+**Output:**
+- formatted table printed to terminal
+
+---
+
+### 6. plot_trajectories(angles, velocity)
+**Input:**
+- selected angles
+
+**Process:**
+- re-run simulate_trajectory per angle
+- plot x vs y
+
+---
+
+## Execution Flow
+
+1. Define inputs (velocity, angles, dt, g)
+2. Run run_simulation()
+3. Store list of FlightStats
+4. Call report()
+5. Call plot_trajectories()
+
+---
+
+## Design Rule
+
+- Simulation only produces raw motion data
+- Analysis only extracts metrics
+- Evaluation combines both into a single structured object
+- Reporting and plotting do NOT compute physics

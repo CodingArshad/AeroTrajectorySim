@@ -1,5 +1,6 @@
 import math
 import matplotlib.pyplot as plt
+from dataclasses import dataclass
 
 # Set initial conditions
 launch_vel = 10
@@ -7,12 +8,9 @@ launch_angles = [math.radians(angle) for angle in [30, 45, 60]]
 g = 9.81
 dt = 0.1
 
-# Results storage
-angles = []
-flight_times = []
-max_heights = []
-ranges = []
+#Define Functions:
 
+## Function simulates the trajectory and outputs the x, y, and times in lists for a given launch velocity and angle
 def simulate_trajectory(launch_vel, launch_angle):
     # Constants
     x_pos = 0
@@ -42,34 +40,57 @@ def simulate_trajectory(launch_vel, launch_angle):
             break
     return x, y, times
 
-# Simulate trajectory for each launch angle
-for i in range(len(launch_angles)):
-    # Set initial conditions for the current launch angle
-    x, y, times = simulate_trajectory(launch_vel, launch_angles[i])
-
-    # Calculate results
-    angle = math.degrees(launch_angles[i])
-    max_height = max(y)
+## Function to compute the flight statistics for a given launch angle
+def analyze_trajectory(x, y, times):
     flight_time = times[-1]
+    max_height = max(y)
     horizontal_range = x[-1]
+    return flight_time, max_height, horizontal_range
 
-    # Store results
-    angles.append(angle)
-    flight_times.append(flight_time)
-    max_heights.append(max_height)
-    ranges.append(horizontal_range)
+## Data class to store flight statistics
+@dataclass
+class FlightStats:
+    launch_angle: float
+    flight_time: float
+    max_height: float
+    horizontal_range: float
 
-    # Store trajectory for plotting
-    plt.plot(x, y, label='{:.2f} degrees'.format(math.degrees(launch_angles[i])))
+## Function to cleanly return the flight statistics
+def get_flight_stats(launch_vel, launch_angle):
+    x, y, times = simulate_trajectory(launch_vel, launch_angle)
+    return FlightStats(launch_angle=launch_angle, flight_time=times[-1], max_height=max(y), horizontal_range=x[-1])
 
-# Plot trajectory
-plt.title('Trajectory Graph')
-plt.xlabel('Distance (m)')
-plt.ylabel('Height (m)')
-plt.legend()
-plt.show()
+## Function to output the results in a formatted table
+def report(results):
+    print(f"Launch Angle: {math.degrees(results.launch_angle):.2f} degrees")
+    print(f"Flight Time: {results.flight_time:.2f} seconds")
+    print(f"Max Height: {results.max_height:.2f} meters")
+    print(f"Range: {results.horizontal_range:.2f} meters")
 
-# Print results
-print("Launch Angle (degrees) | Flight Time (s) | Max Height (m) | Range (m) |")
-for i in range(len(angles)):
-    print(f"{angles[i]:22.2f} | {flight_times[i]:15.2f} | {max_heights[i]:14.2f} | {ranges[i]:9.2f} |")
+## Function to run the simulation
+def run_simulation(angles, launch_vel):
+    results = []
+    for angle in angles:
+        stat = get_flight_stats(launch_vel, angle)
+        results.append(stat)
+    return results
+
+# Function to plot the trajectory for each launch angle
+def plot_function(launch_vel, launch_angles):
+    for i in range(len(launch_angles)):
+        x, y, times = simulate_trajectory(launch_vel, launch_angles[i])
+        # Store trajectory for plotting
+        plt.plot(x, y, label='{:.2f} degrees'.format(math.degrees(launch_angles[i])))
+
+    # Plot trajectory
+    plt.title('Trajectory Graph')
+    plt.xlabel('Distance (m)')
+    plt.ylabel('Height (m)')
+    plt.legend()
+    plt.show()
+
+# Run the simulation and plot the results
+results = run_simulation(launch_angles, launch_vel)
+for result in results:
+    report(result)
+plot_function(launch_vel, launch_angles)
